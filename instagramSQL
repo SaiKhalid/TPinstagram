@@ -1,0 +1,75 @@
+-- CREATE TABLE IF NOT EXISTS users (
+--     user_id SERIAL PRIMARY KEY,
+--     username VARCHAR(255) UNIQUE NOT NULL,
+--     first_name VARCHAR(255) NOT NULL,
+--     last_name VARCHAR(255) NOT NULL,
+--     email VARCHAR(255) UNIQUE NOT NULL,
+--     phone_number VARCHAR(255) UNIQUE NOT NULL,
+--     password VARCHAR(255) NOT NULL,
+--     avatar VARCHAR(255),
+--     bio TEXT,
+--     created_at TIMESTAMP NOT NULL
+-- );
+
+-- insert into users (username, first_name, last_name, email, password, avatar, bio, created_at, updated_at) values ('nodlin0', 'Norry', 'Odlin', 'nodlin0@sciencedirect.com', 'uoMiZt', 'https://robohash.org/enimvoluptateillum.png?size=50x50&set=set1', 'Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.', '27-11-2018', '20-08-2020');
+-- insert into users (username, first_name, last_name, email, password, avatar, bio, created_at, updated_at) values ('hkillelay1', 'Hyman', 'Killelay', 'hkillelay1@usatoday.com', '7R1gGbI', 'https://robohash.org/utquimolestiae.png?size=50x50&set=set1', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.', '11-09-2019', '02-05-2014');
+
+-- CREATE TABLE IF NOT EXISTS posts (
+--     post_id SERIAL PRIMARY KEY,
+--     user_id INTEGER REFERENCES users(user_id) NOT NULL,
+--     url VARCHAR(255) NOT NULL,
+--     caption TEXT,
+--     latitude DOUBLE PRECISION,
+--     longitude DOUBLE PRECISION,
+--     created_at TIMESTAMP DEFAULT NOW()
+-- );
+
+-- insert into posts (user_id, url, caption, latitude, longitude, created_at, updated_at) values (28, 'http://simplemachines.org/ipsum/dolor/sit/amet.jsp', '', 66, 111, '14-05-2015', '02-10-2020');
+
+-- CREATE TABLE IF NOT EXISTS comments  (
+--     comment_id SERIAL PRIMARY KEY,
+--     post_id INTEGER REFERENCES posts(post_id) NOT NULL,
+--     user_id INTEGER REFERENCES users(user_id) NOT NULL,
+--     content TEXT NOT NULL,
+--     created_at TIMESTAMP NOT NULL
+-- );
+
+-- CREATE TABLE IF NOT EXISTS likes  (
+--     like_id SERIAL PRIMARY KEY,
+--     post_id INTEGER REFERENCES posts(post_id) NOT NULL,
+--     user_id INTEGER REFERENCES users(user_id) NOT NULL,
+--     created_at TIMESTAMP NOT NULL,
+-- );
+
+-- CREATE TABLE IF NOT EXISTS followers  (
+--     follower_id SERIAL PRIMARY KEY,
+--     follower_user_id INTEGER REFERENCES users(user_id) NOT NULL,
+--     following_user_id INTEGER REFERENCES users(user_id) NOT NULL,
+--     created_at TIMESTAMP NOT NULL
+-- );
+
+--//insertion :
+-- insert into followers (follower_user_id, following_user_id, created_at) values (21, 6, '25-10-2020');
+
+--CREATE TABLE like_comment (
+--     id SERIAL PRIMARY KEY,,
+--    date_temps TIMESTAMP DEFAULT NOW(),
+--    FOREIGN KEY(utilisateur_id) REFERENCES utilisateurs(id),
+--   FOREIGN KEY(commentaire_id)REFERENCES commentaire(id)
+--); 
+
+--//l'utilisateur ne peut pas like qu'une seule fois.
+-- ALTER TABLE likes
+-- ADD CONSTRAINT like_once_unique UNIQUE (user_id, post_id);
+
+--//Un utilisateur ne peut suivre un autre utilisateur qu’une seule fois
+-- ALTER TABLE followers
+-- ADD CONSTRAINT follow_once_unique UNIQUE (follower_user_id, following_user_id);
+
+--//Un utilisateur ne peut pas suivre sois-meme
+-- ALTER TABLE followers
+-- ADD CONSTRAINT cant_follow_self_name CHECK (follower_user_id != following_user_id);
+
+
+
+-- insert into likes (post_id, user_id, created_at) values (2, 2, '25-03-2021');
