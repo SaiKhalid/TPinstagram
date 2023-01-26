@@ -146,6 +146,8 @@
 -- WHERE users.user_id = posts.user_id;
 -- //filtrera le résultat de la jointure pour n'afficher que les commentaires et les utilisateurs qui ont commenté leurs propres publications.
 
+
+-- //Q10: Le nombre de likes pour la photo d’ID 4
 -- SELECT COUNT (*) likes
 -- FROM posts JOIN likes ON likes.post_id = posts.post_id
 -- //pour renvoyer toutes les lignes de la table likes qui ont une valeur post_id correspondante dans la table des posts.
