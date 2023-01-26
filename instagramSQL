@@ -11,8 +11,7 @@
 --     created_at TIMESTAMP NOT NULL
 -- );
 
--- insert into users (username, first_name, last_name, email, password, avatar, bio, created_at, updated_at) values ('nodlin0', 'Norry', 'Odlin', 'nodlin0@sciencedirect.com', 'uoMiZt', 'https://robohash.org/enimvoluptateillum.png?size=50x50&set=set1', 'Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.', '27-11-2018', '20-08-2020');
--- insert into users (username, first_name, last_name, email, password, avatar, bio, created_at, updated_at) values ('hkillelay1', 'Hyman', 'Killelay', 'hkillelay1@usatoday.com', '7R1gGbI', 'https://robohash.org/utquimolestiae.png?size=50x50&set=set1', 'Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.', '11-09-2019', '02-05-2014');
+
 
 -- CREATE TABLE IF NOT EXISTS posts (
 --     post_id SERIAL PRIMARY KEY,
@@ -24,7 +23,7 @@
 --     created_at TIMESTAMP DEFAULT NOW()
 -- );
 
--- insert into posts (user_id, url, caption, latitude, longitude, created_at, updated_at) values (28, 'http://simplemachines.org/ipsum/dolor/sit/amet.jsp', '', 66, 111, '14-05-2015', '02-10-2020');
+
 
 -- CREATE TABLE IF NOT EXISTS comments  (
 --     comment_id SERIAL PRIMARY KEY,
@@ -48,19 +47,22 @@
 --     created_at TIMESTAMP NOT NULL
 -- );
 
---//insertion :
--- insert into followers (follower_user_id, following_user_id, created_at) values (21, 6, '25-10-2020');
 
---CREATE TABLE like_comment (
---     id SERIAL PRIMARY KEY,,
---    date_temps TIMESTAMP DEFAULT NOW(),
---    FOREIGN KEY(utilisateur_id) REFERENCES utilisateurs(id),
---   FOREIGN KEY(commentaire_id)REFERENCES commentaire(id)
+
+--CREATE TABLE IF NOT EXISTS like_comment (
+--     like_comment_id SERIAL PRIMARY KEY,
+--     comment_id INTEGER REFERENCES comments(comment_id) NOT NULL,
+--     user_id INTEGER REFERENCES users(user_id) NOT NULL,
+--     created_at TIMESTAMP NOT NULL
 --); 
 
---//l'utilisateur ne peut pas like qu'une seule fois.
+--//l'utilisateur ne peut pas liker un post qu'une seule fois.
 -- ALTER TABLE likes
 -- ADD CONSTRAINT like_once_unique UNIQUE (user_id, post_id);
+
+--//l'utilisateur ne peut pas liker un commentaire qu'une seule fois.
+-- ALTER TABLE like_comment
+-- ADD CONSTRAINT like_comment_once_unique UNIQUE (user_id, comment_id);
 
 --//Un utilisateur ne peut suivre un autre utilisateur qu’une seule fois
 -- ALTER TABLE followers
@@ -70,6 +72,81 @@
 -- ALTER TABLE followers
 -- ADD CONSTRAINT cant_follow_self_name CHECK (follower_user_id != following_user_id);
 
-
-
+--//insertion :
+ -- 1/users :
+-- insert into users (username, first_name, last_name, email, password, avatar, bio, created_at, updated_at) 
+-- values ('nodlin0', 'Norry', 'Odlin', 'nodlin0@sciencedirect.com', 'uoMiZt', 'https://robohash.org/enimvoluptateillum.png?size=50x50&set=set1', 'Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.', '27-11-2018', '20-08-2020');
+-- 2/posts
+-- insert into posts (user_id, url, caption, latitude, longitude, created_at) 
+-- values (28, 'http://simplemachines.org/ipsum/dolor/sit/amet.jsp', '', 66, 111, '14-05-2015');
+-- 3/ comments
+--insert into comments (post_id, user_id, content, created_at) 
+-- values (17, 42, 'Vestibulum quam sapien, varius ut, blandit non, interdum in, ante. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio. Curabitur convallis.
+-- 4/followers
+-- insert into followers (follower_user_id, following_user_id, created_at) values (21, 6, '25-10-2020');
+-- 5/likes
 -- insert into likes (post_id, user_id, created_at) values (2, 2, '25-03-2021');
+-- 5/like_comment
+--insert into like_comment (comment_id, user_id, created_at) values (185, 71, '11-11-2021');
+
+
+
+
+--//Q4: Pour tous les commentaires, montrer le contenu et le username de l'auteur 
+
+-- SELECT comments.comment_id, users.username AS username, comments.content AS content 
+-- FROM users JOIN comments ON comments.user_id=users.user_id;
+---- //pour renvoyer toutes les lignes de la table comments qui ont une valeur user_id correspondante dans la table des users.
+
+--//Q5: Pour chaque commentaire, afficher son contenu et l'url de la photo à laquelle le commentaire a été ajouté
+
+-- SELECT posts.post_id, comments.content AS content, posts.url AS url  
+-- FROM posts JOIN comments ON posts.post_id=comments.post_id;
+---- //pour renvoyer toutes les lignes de la table comments qui ont une valeur post_id correspondante dans la table des posts.
+
+
+--//Q6 : Afficher l'url de chaque photo et le nom d'utilisateur de l'auteur
+-- SELECT posts.post_id, users.username AS username, posts.url AS url
+-- FROM users JOIN posts ON posts.user_id=users.user_id;
+---- //pour renvoyer toutes les lignes de la table posts qui ont une valeur user_id correspondante dans la table des users.
+
+--//Q7: Trouver tous les commentaires pour la photo d'id 3, avec le username de l'utilisateur qui a commenté
+-- SELECT comments.*, users.username
+-- FROM users 
+-- JOIN posts ON posts.user_id = users.user_id
+---- //pour renvoyer toutes les lignes de la table posts qui ont une valeur user_id correspondante dans la table des users.
+-- JOIN comments ON comments.post_id = posts.post_id
+---- //cela renverra toutes les lignes de la jointure précédente qui ont une valeur post_id correspondante dans la table comments.
+-- WHERE posts.post_id = 2;
+
+-- SELECT * from comments ORDER BY post_id ASC;
+
+
+--//Q8 : Trouver tous les url des photos ainsi que tous les commentaires qui ont été posté par l'auteur de la photo id =3
+-- SELECT posts.*
+-- FROM users
+-- JOIN posts on posts.user_id = users.user_id
+--//pour renvoyer toutes les lignes de la table posts qui ont une valeur user_id correspondante dans la table des users.
+-- JOIN comments on comments.post_id = posts.post_id
+--//pour renvoyer toutes les lignes de la table comments qui ont une valeur user_id correspondante dans la table des users.
+-- WHERE posts.post_id = 3;
+
+
+-- SELECT * from posts WHERE post_id = 3;
+
+-- -- post id 3, by user 48
+
+--//Q9: A l'exercice précédent afficher aussi le nom de l'utilisateur qui a commenté ses propres photos
+-- SELECT users.*, comments.*
+-- FROM users
+-- JOIN comments ON comments.user_id = users.user_id 
+-- //pour renvoyer toutes les lignes de la table comments qui ont une valeur user_id correspondante dans la table des users.
+-- JOIN posts ON comments.post_id = posts.post_id 
+-- //cela renverra toutes les lignes de la jointure précédente qui ont une valeur post_id correspondante dans la table posts.
+-- WHERE users.user_id = posts.user_id;
+-- //filtrera le résultat de la jointure pour n'afficher que les commentaires et les utilisateurs qui ont commenté leurs propres publications.
+
+-- SELECT COUNT (*) likes
+-- FROM posts JOIN likes ON likes.post_id = posts.post_id
+-- //pour renvoyer toutes les lignes de la table likes qui ont une valeur post_id correspondante dans la table des posts.
+-- WHERE posts.post_id = 4;
